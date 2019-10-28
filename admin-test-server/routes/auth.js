@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var { query } = require('../database/mysql');
 const uuidv4 = require('uuid/v4');
-
+var _ = require('lodash');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -19,14 +19,22 @@ router.route('/login')
       if (result.length === 0) {
         res.json({ result: 2 })
       } else {
-
+        result[0] = _.omit(result[0], ['password'])
         body.token = result[0].token;
+
         body.profile = result[0];
         body.result = 1;
         console.log(body);
         res.json(body)
       }
     })
+  });
+
+router.route('/logout')
+  .get(async (req, res, next) => {
+    console.log('logout');
+    console.log('세션 파괴');
+    res.json({result:1})
   });
 
 router.route('/token')
