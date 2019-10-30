@@ -1,11 +1,12 @@
 var mysql = require('mysql');
 var moment = require('moment');
+const envs = require('../config');
 
 var db = mysql.createConnection({
-  host: 'localhost',
-  user: "root",
-  password: "root",
-  database: "react-admin"
+  host: envs.DB_HOST,
+  user: envs.DB_USER,
+  password: envs.DB_PASSWORD,
+  database: envs.DB_DATABASE
 });
 db.connect();
 

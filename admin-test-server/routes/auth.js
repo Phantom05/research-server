@@ -4,6 +4,9 @@ var { query } = require('../database/mysql');
 const uuidv4 = require('uuid/v4');
 var _ = require('lodash');
 
+
+const {mailer} =require('../components/mail/mailer');
+
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
@@ -133,6 +136,63 @@ router.route('/signup')
       }
     });
   });
+
+router.route('/certification/email')
+.post(async (req, res, next) => {
+  console.log(req.body);
+  let body = {}
+  const {email} = req.body;
+  query(`select * from users where email="${email}"`, async (results) => {
+    console.log(results);
+    if (results.length > 0) {
+      res.json({ result: 4 })
+    }else{
+
+      const mainInfo={
+        from: '"Board World Admin 👻"', // sender address
+        to: 'monster2jy@gmail.com', // list of receivers
+        subject: 'Hello ✔', // Subject line
+        html: '<b>Hello world?</b>' // html body
+      }
+      await mailer(mainInfo);
+      console.log('fff');
+      // async function main() {
+      //   // Generate test SMTP service account from ethereal.email
+      //   // Only needed if you don't have a real mail account for testing
+      //   let testAccount = await nodemailer.createTestAccount();
+      //   // create reusable transporter object using the default SMTP transport
+      //   let transporter = nodemailer.createTransport({
+      //       service: 'gmail',
+      //       host :'smtp.gmlail.com',
+      //       port: 587,
+      //       secure: false, // true for 465, false for other ports
+      //       auth: {
+      //           user: envs.MAIL_EMAIL, // generated ethereal user
+      //           pass: envs.MAIL_PASSWORD // generated ethereal password
+      //       }
+      //   });
+      
+      //   // send mail with defined transport object
+      //   let info = await transporter.sendMail({
+      //       from: '"Board World Admin 👻"', // sender address
+      //       to: 'monster2jy@gmail.com', // list of receivers
+      //       subject: 'Hello ✔', // Subject line
+      //       html: '<b>Hello world?</b>' // html body
+      //   });
+      
+      //   console.log('Message sent: %s', info.messageId);
+      //   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+      
+      //   // Preview only available when sending through an Ethereal account
+      //   console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      //   // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+      // }
+      // main().catch(console.error);
+      res.json({result:1})
+    }
+  })
+
+});
 
 
 module.exports = router;
