@@ -8,9 +8,27 @@ var cors = require('cors');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth');
+var boardRouter = require('./routes/board');
+
+var adminBoardRouter = require('./routes/admin/board');
+
+var {sequelize} = require('./models/index');
 
 
 var app = express();
+const driver = async () => {
+  try {
+      await sequelize.sync({alter: true});
+  } catch (err) {
+      console.error('초기화 실패');
+      console.error(err);
+      return;
+  }
+
+  console.log('초기화 완료.');
+};
+driver();
+
 
 app.use(cors());
 // view engine setup
@@ -28,6 +46,11 @@ app.use(express.static(path.join(__dirname, 'config')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/board', boardRouter);
+
+app.use('/admin/board', adminBoardRouter);
+
+
 
 
 // app.get('*', (req, res) => {
