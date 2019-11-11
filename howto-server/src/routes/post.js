@@ -3,12 +3,16 @@ const {
   _
 } = require('./npm_modules');
 const {
-  wrap
+  // wrap
 } = require('./middleware');
+// const {
+//   shuffleJoin,
+//   calPage
+// } = require('./common');
 const {
-  shuffleJoin,
-  calPage
-} = require('./common');
+  post_category_mapper,
+  post_group_mapper
+} = require('../lib/mapper')
 const { Post } = require('../models');
 var router = express.Router();
 
@@ -17,34 +21,36 @@ var router = express.Router();
 /* Board List. */
 router.route('/:group/list')
   .post(async (req, res, next) => {
+    const {group} = req.params;
     const { category } = req.body;
 
-    console.log(category);
-    res.json({hello:1})
-    // BoardCategory.findAll({
-    //   where: { category: category }
-    // }).then((data) => {
-    //   const body = {};
-    //   let menuList = data.map(list => list.dataValues);
+    // console.log(group);
+    // console.log(category);
 
-    //   console.log();
+    // if(category.trim() === ''){
 
-    //   body.boardMenuList = _.groupBy(menuList, (list => list.category_group));
-    //   res.json(body)
+    // }
 
-    // }).catch(err => {
-    //   console.log(err, 'error');
-    // })
+    // post_category_mapper
+    // post_group_mapper
+
+    // res.json({hello:1})
+
+    Post.findAll({
+      where: { category: category }
+    }).then((data) => {
+      const body = {};
+      let dataList = data.map(list => list.dataValues);
+      // body.boardMenuList = _.groupBy(menuList, (list => list.category_group));
+      body.list=dataList;
+      res.json(body)
+
+    }).catch(err => {
+      console.log(err, 'error');
+    })
 
 
   });
-
-  const category_mapper={
-    '한식':1
-  }
-  const group_mapper={
-    'cook':1
-  }
 /* Post Upload. */
 router.route('/:group/upload')
   .post(async (req, res, next) => {
@@ -58,12 +64,8 @@ router.route('/:group/upload')
       category,
       image,
     } = req.body;
-    let category_seq = category_mapper[category];
-    let group_seq = group_mapper[group];
-
-    // title = shuffleJoin('ABCDEFG123456789');
-    // body = shuffleJoin('ABCDEFG123456789');
-    // console.log(category_seq);
+    let category_seq = post_category_mapper[category];
+    let group_seq = post_group_mapper[group];
 
     Post.create({
       title,
