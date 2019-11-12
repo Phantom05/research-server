@@ -23,22 +23,24 @@ router.route('/:group/list')
   .post(async (req, res, next) => {
     const {group} = req.params;
     const { category } = req.body;
-
+    const filter ={}
     // console.log(group);
-    // console.log(category);
+    console.log(category);
 
-    // if(category.trim() === ''){
+    if(category.trim() === ''){
 
-    // }
+    }else{
+      filter.where = {category}
+    }
 
     // post_category_mapper
     // post_group_mapper
 
     // res.json({hello:1})
-
-    Post.findAll({
-      where: { category: category }
-    }).then((data) => {
+    // {
+    //   where: { category: category }
+    // }
+    Post.findAll(filter).then((data) => {
       const body = {};
       let dataList = data.map(list => list.dataValues);
       // body.boardMenuList = _.groupBy(menuList, (list => list.category_group));
