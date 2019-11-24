@@ -1,13 +1,13 @@
 var utils = require(global.__base__.path.utils);
 var router = utils._npm_modules.express.Router();
 
-const {Media} = utils._models;
+const { Media,Sequelize:{Op} } = utils._models;
 
 
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-
+router.get('/', function (req, res, next) {
+  console.log('index');
   // Media.findAndCountAll({}).then((result) => {
   //   const boardList = result.rows.map(list => list.dataValues);
   //   const body = {};
@@ -43,18 +43,31 @@ router.get('/', function(req, res, next) {
   //   res.json({ result: 2 })
   // });
 
-  const test1 = Media.findAndCountAll({});
+  const body = {};
+  const recommandList = Media.findAll({
+    where:{
+      [Op.or]:[
+        {
+          like_count:{[Op.gte]:3}
+        }
+      ] 
+    }
+  });
   const test2 = Media.findAndCountAll({});
 
-  Promise.all([test1,test2])
-  .then(responses =>{
-    console.log(responses);
-    res.json({ result: 1 })
-  })
-  .catch(err => {
+  Promise.all([recommandList, test2])
+    .then(responses => {
+
+      body.result = 1;
+      body.recommandMedia = responses[0];
+      console.log(responses);
+      res.json(body)
+    })
+    .catch(err => {
       console.log(err, 'error');
-      res.json({ result: 2 })
-  });
+      body.result = 2;
+      res.json(body)
+    });
 
 });
 
