@@ -84,7 +84,10 @@ function log(txt, color,bool = false) {
 const mediaCategory = {
   '1':'영화',
   '2':"tv",
-  "3":"드라마"
+  "3":"드라마",
+  '4':"뉴스",
+  "5":'다큐멘터리',
+  "6":"예능"
 }
 const movieCategory ={
   '1':'액션',
