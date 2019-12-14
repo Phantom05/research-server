@@ -3,6 +3,7 @@ var router = utils._npm_modules.express.Router();
 
 const { Media,Sequelize:{Op} } = utils._models;
 const {_} = utils._npm_modules;
+const uuidv4 = require('uuid/v4');
 
 
 /* GET home page. */
@@ -188,6 +189,23 @@ router.get('/', function (req, res, next) {
       res.json(body)
     });
 
+});
+
+
+router.post('/test', function (req, res, next) {
+  console.log('test index');
+  console.log(req.body);
+
+  const profile ={
+    type:1,
+    result:1,
+    token:"576521a4-ffbb-4d7e-923f-c884d670817a",
+    profile:{
+      userType:1,
+      name:"Chris Brown"
+    }
+  }
+  res.json(profile)
 });
 
 module.exports = router;
